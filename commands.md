@@ -6,3 +6,4 @@
 
 ### npm start
 
+` npm install express dotenv morgan
