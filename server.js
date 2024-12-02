@@ -2,8 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const colors = require("colors");
-const connectDB = require("./config/db");
 const errorHandler = require("./middleware/error");
+const connectDB = require("./config/db");
 
 // Load env vars
 dotenv.config({ path: "./config/config.env" });
@@ -13,10 +13,11 @@ connectDB();
 
 // Route files
 const bootcamps = require("./routes/bootcamps");
+const courses = require("./routes/courses");
 
 const app = express();
 
-// Body parser - If it is not passed we'll get undefined in console when we console the rew body
+// Body parser
 app.use(express.json());
 
 // Dev logging middleware
@@ -26,8 +27,8 @@ if (process.env.NODE_ENV === "development") {
 
 // Mount routers
 app.use("/api/v1/bootcamps", bootcamps);
+app.use("/api/v1/courses", courses);
 
-// Add errorHandler in the middleware
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
