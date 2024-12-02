@@ -6,4 +6,11 @@
 
 ### npm start
 
-` npm install express dotenv morgan
+`npm install express dotenv morgan`
+
+`npm i mongoose`
+
+`npm i colors`
+
+
+
