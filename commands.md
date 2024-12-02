@@ -18,3 +18,10 @@ npm i slugify
 
 ```
 npm i node-geocoder
+
+
+``` To add datas
+node seeder -i
+
+``` To delete datas
+node seeder -d
