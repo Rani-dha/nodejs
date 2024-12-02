@@ -12,5 +12,4 @@
 
 `npm i colors`
 
-
-
+``` npm i slugify
