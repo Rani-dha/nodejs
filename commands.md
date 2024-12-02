@@ -12,4 +12,9 @@
 
 `npm i colors`
 
-``` npm i slugify
+``` 
+npm i slugify
+
+
+```
+npm i node-geocoder
