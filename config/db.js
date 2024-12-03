@@ -7,8 +7,13 @@ const mongoose = require('mongoose');
       useUnifiedTopology: true,
     });
 
+    // Disable strict population checks
+    mongoose.set("strictPopulate", false);
+    
     // Log the host after the connection is successfully established
-    console.log(`MongoDB Connected: ${conn.connection.host}`.cyan.underline.bold);
+    console.log(
+      `MongoDB Connected: ${conn.connection.host}`.cyan.underline.bold
+    );
   } catch (err) {
     // Log the error if the connection fails
     console.error(`Mongo Error: ${err.message}`.red.bold);

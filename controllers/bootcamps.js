@@ -2,78 +2,78 @@ const Bootcamp = require("../models/Bootcamp");
 const asyncHandler = require("../middleware/asyncHandler");
 
 const getBootcamps = asyncHandler(async (req, res, next) => {
-   let query;
+    let query;
 
-   // Copy req.query
-   const reqQuery = { ...req.query };
+    // Copy req.query
+    const reqQuery = { ...req.query };
 
-   // Fields to exclude
-   const removeFields = ["select", "sort", "page", "limit"];
+    // Fields to exclude
+    const removeFields = ["select", "sort", "page", "limit"];
 
-   // Loop over removeFields and delete them from reqQuery
-   removeFields.forEach((param) => delete reqQuery[param]);
+    // Loop over removeFields and delete them from reqQuery
+    removeFields.forEach((param) => delete reqQuery[param]);
 
-   // Create query string
-   let queryStr = JSON.stringify(reqQuery);
+    // Create query string
+    let queryStr = JSON.stringify(reqQuery);
 
-   // Create operators ($gt, $gte, etc)
-   queryStr = queryStr.replace(
-     /\b(gt|gte|lt|lte|in)\b/g,
-     (match) => `$${match}`
-   );
+    // Create operators ($gt, $gte, etc)
+    queryStr = queryStr.replace(
+      /\b(gt|gte|lt|lte|in)\b/g,
+      (match) => `$${match}`
+    );
 
-   // Finding resource
-   query = Bootcamp.find(JSON.parse(queryStr));
+    // Finding resource
+    query = Bootcamp.find(JSON.parse(queryStr)).populate("courses");
 
-   // Select Fields
-   if (req.query.select) {
-     const fields = req.query.select.split(",").join(" ");
-     query = query.select(fields);
-   }
+    // Select Fields
+    if (req.query.select) {
+      const fields = req.query.select.split(",").join(" ");
+      query = query.select(fields);
+    }
 
-   // Sort
-   if (req.query.sort) {
-     const sortBy = req.query.sort.split(",").join(" ");
-     query = query.sort(sortBy);
-   } else {
-     query = query.sort("-createdAt");
-   }
+    // Sort
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort("-createdAt");
+    }
 
-   // Pagination
-   const page = parseInt(req.query.page, 10) || 1;
-   const limit = parseInt(req.query.limit, 10) || 25;
-   const startIndex = (page - 1) * limit;
-   const endIndex = page * limit;
-   const total = await Bootcamp.countDocuments();
+    // Pagination
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 25;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await Bootcamp.countDocuments();
 
-   query = query.skip(startIndex).limit(limit);
+    query = query.skip(startIndex).limit(limit);
 
-   // Executing query
-   const bootcamps = await query;
+    // Executing query
+    const bootcamps = await query;
 
-   // Pagination result
-   const pagination = {};
+    // Pagination result
+    const pagination = {};
 
-   if (endIndex < total) {
-     pagination.next = {
-       page: page + 1,
-       limit,
-     };
-   }
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit,
+      };
+    }
 
-   if (startIndex > 0) {
-     pagination.prev = {
-       page: page - 1,
-       limit,
-     };
-   }
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit,
+      };
+    }
 
-   res.status(200).json({
-     success: true,
-     count: bootcamps.length,
-     pagination,
-     data: bootcamps,
-   });
+    res.status(200).json({
+      success: true,
+      count: bootcamps.length,
+      pagination,
+      data: bootcamps,
+    });
 });
 
 const getBootcamp = asyncHandler(async (req, res, next) => {
@@ -112,7 +112,7 @@ const updateBootcamp = asyncHandler(async (req, res, next) => {
 });
 
 const deleteBootcamp = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+  const bootcamp = await Bootcamp.findById(req.params.id);
 
   if (!bootcamp) {
     return next(
@@ -120,6 +120,7 @@ const deleteBootcamp = asyncHandler(async (req, res, next) => {
     );
   }
 
+  await Bootcamp.deleteOne({ _id: req.params.id });
   res.status(200).json({ success: true, data: {} });
 });
 
