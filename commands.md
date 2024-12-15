@@ -34,3 +34,5 @@ node seeder -d
 
 ``` 
 npm i bcryptjs jsonwebtoken
+
+npm i cookie-parser
