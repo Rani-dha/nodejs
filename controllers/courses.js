@@ -1,6 +1,6 @@
 const ErrorResponse = require("../utils/errorResponse");
-const asyncHandler = require("../middleware/async");
-const Course = require("../models/Course");
+const asyncHandler = require("../middleware/asyncHandler");
+const Course = require("../models/Courses");
 const Bootcamp = require("../models/Bootcamp");
 
 // @desc      Get courses
@@ -73,6 +73,9 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
   });
 });
 
+// @desc      Update course
+// @route     PUT /api/v1/courses/:id
+// @access    Private
 exports.updateCourse = asyncHandler(async (req, res, next) => {
   let course = await Course.findById(req.params.id);
 
@@ -95,7 +98,8 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
 });
 
 exports.deleteCourse = asyncHandler(async (req, res, next) => {
-  const course = await Course.findById(req.params.id);
+  console.log("in del req", req.params.id);
+  const course = await Course.findByIdAndDelete(req.params.id);
 
   if (!course) {
     return next(
@@ -103,8 +107,6 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
       404
     );
   }
-
-  await course.remove();
 
   res.status(200).json({
     success: true,
