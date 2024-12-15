@@ -50,14 +50,15 @@ exports.login = asyncHandler(async (req, res, next) => {
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
   // Ensure the JWT_COOKIE_EXPIRE is a valid number and convert it to milliseconds
-  const expiresIn = Number(process.env.JWT_EXPIRE);
-  
-  if (isNaN(expiresIn) || expiresIn <= 0) {
-    throw new Error('Invalid JWT_COOKIE_EXPIRE value');
+  const expiresInDays = Number(process.env.JWT_COOKIE_EXPIRE);
+
+  if (isNaN(expiresInDays) || expiresInDays <= 0) {
+    throw new Error("Invalid JWT_COOKIE_EXPIRE value");
   }
 
-  // Calculate the expiration date
-  const expirationDate = new Date(Date.now() + expiresIn * 24 * 60 * 60 * 1000);
+  const expirationDate = new Date(
+    Date.now() + expiresInDays * 24 * 60 * 60 * 1000
+  );
 
   // Set up the options for the cookie
   const options = {
@@ -76,7 +77,7 @@ const sendTokenResponse = (user, statusCode, res) => {
   }
 
   // Log the expiration details (for debugging purposes)
-  console.log('JWT Cookie expires in:', expiresIn, 'ms');
+  console.log('JWT Cookie expires in:', expiresInDays, 'ms');
   console.log('Expiration Date:', options.expires);
 
   // Send the response with the token set in a cookie
