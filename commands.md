@@ -31,3 +31,6 @@ node seeder -d
 
 
 ###  npm i express-fileupload
+
+``` 
+npm i bcryptjs jsonwebtoken
