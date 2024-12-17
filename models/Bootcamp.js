@@ -137,10 +137,12 @@ BootcampSchema.pre("save", function (next) {
 // });
 
 // Cascade delete courses when a bootcamp is deleted
-BootcampSchema.pre("remove", async function (next) {
-  console.log(`Courses being removed from bootcamp ${this._id}`);
-  await this.model("Course").deleteMany({ bootcamp: this._id });
-  next();
+BootcampSchema.post("findOneAndDelete", async function (doc) {
+  if (doc) {
+    const bootcampId = doc._id;
+    console.log(`Deleting all courses associated with bootcamp ${bootcampId}`);
+    await mongoose.model("Course").deleteMany({ bootcamp: bootcampId });
+  }
 });
 
 // Reverse populate with virtuals

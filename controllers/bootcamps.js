@@ -86,7 +86,7 @@ const deleteBootcamp = asyncHandler(async (req, res, next) => {
     );
   }
 
-  await Bootcamp.deleteOne({ _id: req.params.id });
+  await Bootcamp.findOneAndDelete({ _id: req.params.id });
   res.status(200).json({ success: true, data: {} });
 });
 
